@@ -23,7 +23,7 @@ func (s *Service) GetAll(req *GetAllRequest) (res *GetAllResponse) {
 	res = &GetAllResponse{}
 	ps, err := s.store.GetAll()
 	if err != nil {
-		log.Printf("service %s", err)
+		log.Printf("product service %s", err)
 		res.Err = &util.ResponseError{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "Internal Server Error",
@@ -38,7 +38,7 @@ func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 	res = &CreateResponse{}
 	p, err := s.store.Create(req.Product)
 	if err != nil {
-		log.Printf("service %s", err)
+		log.Printf("product service %s", err)
 		res.Err = &util.ResponseError{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "Internal Server Error",

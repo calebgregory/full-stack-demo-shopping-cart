@@ -1,7 +1,9 @@
 package app
 
 import (
+	"github.com/calebgregory/full-stack-demo-shopping-cart/order"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
+	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"net/http"
@@ -9,6 +11,7 @@ import (
 
 type App struct {
 	db             *gorm.DB
+	OrderHandler   order.HttpHandler
 	ProductHandler product.HttpHandler
 }
 
@@ -20,6 +23,7 @@ func New(pathToDb string) (*App, error) {
 
 	a := &App{
 		db:             db,
+		OrderHandler:   order.New(db),
 		ProductHandler: product.New(db),
 	}
 
@@ -27,8 +31,9 @@ func New(pathToDb string) (*App, error) {
 }
 
 func (app *App) ListenAndServe(addr string, handler http.Handler) error {
-	http.HandleFunc("/products/get-all", app.ProductHandler.HandleGetAll)
-	http.HandleFunc("/products/create", app.ProductHandler.HandleCreate)
+	http.HandleFunc("/orders/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
+	http.HandleFunc("/products/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
+	http.HandleFunc("/products/create", util.AllowCORS(app.ProductHandler.HandleCreate))
 	return http.ListenAndServe(addr, handler)
 }
 

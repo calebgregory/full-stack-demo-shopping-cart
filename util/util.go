@@ -30,6 +30,22 @@ func (r *ErringResponse) ResponseError() *ResponseError {
 	return r.Err
 }
 
+func AllowCORS(f func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if origin := r.Header.Get("Origin"); origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers",
+				"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		}
+		if r.Method == http.MethodOptions {
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		f(w, r)
+	})
+}
+
 func BindJSON(req *http.Request, schema interface{}) error {
 	jsonBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -57,6 +73,5 @@ func WriteResponse(w http.ResponseWriter, res ResponseErrer) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }

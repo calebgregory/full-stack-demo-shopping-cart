@@ -15,7 +15,7 @@ func main() {
 	flag.StringVar(&pathToDb, "path-to-db", "./tmp/main.db", "Specify path to local sqlite3 db file.")
 	flag.Parse()
 
-	log.Printf("Path to database: %s", pathToDb)
+	log.Printf("Server starting...\nPath to database: %s\nPort: %d", pathToDb, port)
 
 	app, err := app.New(pathToDb)
 	defer app.Close()
