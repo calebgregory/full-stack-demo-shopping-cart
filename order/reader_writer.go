@@ -4,7 +4,6 @@ import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
 	"github.com/jinzhu/gorm"
 	"github.com/satchelhealth/errors"
-	"log"
 )
 
 type ReaderWriter interface {
@@ -17,6 +16,7 @@ type Store struct {
 
 func NewReaderWriter(db *gorm.DB) ReaderWriter {
 	db.AutoMigrate(&Order{})
+	db.AutoMigrate(&OrderProduct{})
 	return &Store{db: db}
 }
 

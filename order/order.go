@@ -4,11 +4,21 @@ import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Order struct {
 	gorm.Model
-	Products []*product.Product `gorm:"many2many:order_products;"`
+	CustomerID  uint
+	SubmittedAt time.Time
+	Products    []*OrderProduct `gorm:"ForeignKey:OrderID"`
+}
+
+type OrderProduct struct {
+	gorm.Model
+	OrderID   uint
+	ProductID uint
+	Quantity  int
 }
 
 func New(db *gorm.DB) HttpHandler {

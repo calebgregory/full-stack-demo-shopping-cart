@@ -8,7 +8,7 @@ import (
 type Product struct {
 	gorm.Model
 	Description string
-	Price       float32
+	Price       int
 }
 
 func New(db *gorm.DB) HttpHandler {
