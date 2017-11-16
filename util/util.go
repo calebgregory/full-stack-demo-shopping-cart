@@ -30,6 +30,8 @@ func (r *ErringResponse) ResponseError() *ResponseError {
 	return r.Err
 }
 
+// AllowCORS middleware, allows Cross-Origin Resource Sharing. If request
+// Method = OPTIONS, sets headers then returns.
 func AllowCORS(f func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if origin := r.Header.Get("Origin"); origin != "" {
@@ -41,11 +43,14 @@ func AllowCORS(f func(w http.ResponseWriter, r *http.Request)) func(w http.Respo
 		if r.Method == http.MethodOptions {
 			return
 		}
+		// TODO: refactor content-type setting into own decorator
 		w.Header().Set("Content-Type", "application/json")
 		f(w, r)
 	})
 }
 
+// BindJSON binds the request data incoming from HTTP Request Body to the
+// schema provided as argument.
 func BindJSON(req *http.Request, schema interface{}) error {
 	jsonBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -60,6 +65,10 @@ func BindJSON(req *http.Request, schema interface{}) error {
 	return nil
 }
 
+// WriteResponse writes the response struct provided as argument to the
+// http.ResponseWriter. If res is ErringResponse, writes err.StatusCode and
+// marshaled JSON of error message. Otherwise writes StatusOK and marshaled
+// JSON of response struct.
 func WriteResponse(w http.ResponseWriter, res ResponseErrer) {
 	if err := res.ResponseError(); err != nil {
 		w.WriteHeader(err.StatusCode)
