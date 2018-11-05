@@ -26,5 +26,5 @@ func (h *Handler) HandleAddProduct(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.AddProduct(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }

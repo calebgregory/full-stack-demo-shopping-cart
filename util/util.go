@@ -61,7 +61,7 @@ func BindJSON(req *http.Request, schema interface{}) error {
 
 	err = json.Unmarshal(jsonBody, schema)
 	if err != nil {
-		return errors.Wrap(err, "BindJSON Unmarshall")
+		return errors.Wrap(err, "BindJSON Unmarshal")
 	}
 
 	// And now set a new body, which will simulate the same data we read:
@@ -72,7 +72,7 @@ func BindJSON(req *http.Request, schema interface{}) error {
 
 func WriteFailedResponse(w http.ResponseWriter, r *http.Request, err error) {
 	uri := r.URL.RequestURI()
-	log.Printf("[FAILURE] uri: %s; error: %s", uri, err)
+	log.Printf("[FAILURE] %s; error: %s", uri, err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
@@ -80,18 +80,24 @@ func WriteFailedResponse(w http.ResponseWriter, r *http.Request, err error) {
 // http.ResponseWriter. If res is ErringResponse, writes err.StatusCode and
 // marshaled JSON of error message. Otherwise writes StatusOK and marshaled
 // JSON of response struct.
-func WriteResponse(w http.ResponseWriter, res ResponseErrer) {
-	if err := res.ResponseError(); err != nil {
-		w.WriteHeader(err.StatusCode)
-	} else {
-		w.WriteHeader(http.StatusOK)
+func WriteResponse(w http.ResponseWriter, r *http.Request, res ResponseErrer) {
+	uri := r.URL.RequestURI()
+	statusCode := http.StatusOK
+
+	err := res.ResponseError()
+	if err != nil {
+		statusCode = err.StatusCode
 	}
 
 	b, marshalErr := json.Marshal(res)
 	if marshalErr != nil {
+		log.Printf("[FAILURE] %s; marshalling JSON response: %s", uri, marshalErr)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	log.Printf("[REQUEST] %s; err: %s", uri, err)
+
+	w.WriteHeader(statusCode)
 	w.Write(b)
 }

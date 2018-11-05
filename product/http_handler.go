@@ -30,7 +30,7 @@ func (h *Handler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.GetAll(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }
 
 func (h *Handler) HandleGetOne(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func (h *Handler) HandleGetOne(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.GetOne(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }
 
 func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.Create(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }
 
 func (h *Handler) HandleUpdate(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +66,7 @@ func (h *Handler) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.Update(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }
 
 func (h *Handler) HandleDelete(w http.ResponseWriter, r *http.Request) {
@@ -78,5 +78,5 @@ func (h *Handler) HandleDelete(w http.ResponseWriter, r *http.Request) {
 
 	res := h.server.Delete(&req)
 
-	util.WriteResponse(w, res)
+	util.WriteResponse(w, r, res)
 }
