@@ -3,6 +3,8 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
@@ -12,8 +14,40 @@ import (
 // ResponseError for a given request handler. Has StatusCode to return to http
 // client and Message.
 type ResponseError struct {
-	StatusCode int    `json:"statusCode"`
-	Message    string `json:"message"`
+	StatusCode int     `json:"statusCode"`
+	Message    string  `json:"message"`
+	Errors     []error `json:"-"`
+}
+
+func (e *ResponseError) Error() string {
+	errMsg := fmt.Sprintf("ResponseError %d %s; Errors: ", e.StatusCode, e.Message)
+	for _, err := range e.Errors {
+		errMsg += err.Error()
+	}
+	return errMsg
+}
+
+func NewResponseError(err error, opts ...interface{}) *ResponseError {
+	message := "Internal Server Error"
+	if len(opts) > 0 {
+		message = opts[0].(string)
+	}
+
+	statusCode := http.StatusInternalServerError
+	if len(opts) > 1 {
+		statusCode = opts[1].(int)
+	}
+
+	if gorm.IsRecordNotFoundError(errors.Cause(err)) {
+		statusCode = http.StatusNotFound
+		message = "Not Found"
+	}
+
+	return &ResponseError{
+		StatusCode: statusCode,
+		Message:    message,
+		Errors:     []error{err},
+	}
 }
 
 // ResponseErrer defines the behavior of a Response that Errs
