@@ -25,8 +25,7 @@ func NewHttpHandler(s Server) HttpHandler {
 func (h *Handler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 	var req GetAllRequest
 	if err := util.BindJSON(r, &req); err != nil {
-		log.Printf("product handler handle get all bind json %s", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		util.WriteFailedResponse(w, r, err)
 		return
 	}
 
@@ -38,8 +37,7 @@ func (h *Handler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleGetOne(w http.ResponseWriter, r *http.Request) {
 	var req GetOneRequest
 	if err := util.BindJSON(r, &req); err != nil {
-		log.Printf("product handler handle get one bind json %s", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		util.WriteFailedResponse(w, r, err)
 		return
 	}
 
@@ -51,8 +49,7 @@ func (h *Handler) HandleGetOne(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
 	if err := util.BindJSON(r, &req); err != nil {
-		log.Printf("product handler handle create bind json %s", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		util.WriteFailedResponse(w, r, err)
 		return
 	}
 
@@ -64,8 +61,7 @@ func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	var req UpdateRequest
 	if err := util.BindJSON(r, &req); err != nil {
-		log.Printf("product handler handle update bind json %s", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		util.WriteFailedResponse(w, r, err)
 		return
 	}
 
@@ -77,8 +73,7 @@ func (h *Handler) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	var req DeleteRequest
 	if err := util.BindJSON(r, &req); err != nil {
-		log.Printf("product handler handle update bind json %s", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		util.WriteFailedResponse(w, r, err)
 		return
 	}
 
