@@ -1,9 +1,11 @@
 package util
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/satchelhealth/errors"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -54,15 +56,24 @@ func AllowCORS(f func(w http.ResponseWriter, r *http.Request)) func(w http.Respo
 func BindJSON(req *http.Request, schema interface{}) error {
 	jsonBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		return errors.Wrap(err, "bind json read all")
+		return errors.Wrap(err, "BindJSON ReadAll")
 	}
 
 	err = json.Unmarshal(jsonBody, schema)
 	if err != nil {
-		return errors.Wrap(err, "bind json unmarshall")
+		return errors.Wrap(err, "BindJSON Unmarshall")
 	}
 
+	// And now set a new body, which will simulate the same data we read:
+	req.Body = ioutil.NopCloser(bytes.NewBuffer(jsonBody))
+
 	return nil
+}
+
+func WriteFailedResponse(w http.ResponseWriter, r *http.Request, err error) {
+	uri := r.URL.RequestURI()
+	log.Printf("[FAILURE] uri: %s; error: %s", uri, err)
+	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
 // WriteResponse writes the response struct provided as argument to the
