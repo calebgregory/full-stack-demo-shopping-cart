@@ -2,7 +2,7 @@ package product
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/satchelhealth/errors"
+	"github.com/pkg/errors"
 )
 
 type ReaderWriter interface {

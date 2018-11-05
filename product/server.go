@@ -2,8 +2,6 @@ package product
 
 import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
-	"log"
-	"net/http"
 )
 
 type Server interface {
@@ -26,11 +24,7 @@ func (s *Service) GetAll(req *GetAllRequest) (res *GetAllResponse) {
 	res = &GetAllResponse{}
 	ps, err := s.store.GetAll()
 	if err != nil {
-		log.Printf("product service %s", err)
-		res.Err = &util.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal Server Error",
-		}
+		res.Err = util.NewResponseError(err)
 		return
 	}
 	res.Products = ps
@@ -41,11 +35,7 @@ func (s *Service) GetOne(req *GetOneRequest) (res *GetOneResponse) {
 	res = &GetOneResponse{}
 	p, err := s.store.GetOne(req.ID)
 	if err != nil {
-		log.Printf("product service %s", err)
-		res.Err = &util.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal Server Error",
-		}
+		res.Err = util.NewResponseError(err)
 		return
 	}
 	res.Product = p
@@ -56,11 +46,7 @@ func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 	res = &CreateResponse{}
 	p, err := s.store.Create(req.Product)
 	if err != nil {
-		log.Printf("product service %s", err)
-		res.Err = &util.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal Server Error",
-		}
+		res.Err = util.NewResponseError(err)
 		return
 	}
 	res.Product = p
@@ -71,11 +57,7 @@ func (s *Service) Update(req *UpdateRequest) (res *UpdateResponse) {
 	res = &UpdateResponse{}
 	p, err := s.store.Update(req.Product)
 	if err != nil {
-		log.Printf("product service %s", err)
-		res.Err = &util.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal Server Error",
-		}
+		res.Err = util.NewResponseError(err)
 		return
 	}
 	res.Product = p
@@ -86,11 +68,7 @@ func (s *Service) Delete(req *DeleteRequest) (res *DeleteResponse) {
 	res = &DeleteResponse{}
 	err := s.store.Delete(req.Product)
 	if err != nil {
-		log.Printf("product service %s", err)
-		res.Err = &util.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal Server Error",
-		}
+		res.Err = util.NewResponseError(err)
 	}
 	return
 }
