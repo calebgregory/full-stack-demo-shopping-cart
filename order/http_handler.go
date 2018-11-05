@@ -2,7 +2,6 @@ package order
 
 import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
-	"log"
 	"net/http"
 )
 
