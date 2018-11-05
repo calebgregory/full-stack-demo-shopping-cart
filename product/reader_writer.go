@@ -10,6 +10,7 @@ type ReaderWriter interface {
 	GetOne(id int) (*Product, error)
 	Create(*Product) (*Product, error)
 	Update(*Product) (*Product, error)
+	Delete(*Product) error
 }
 
 type Store struct {
@@ -65,4 +66,27 @@ func (s *Store) Update(p *Product) (r *Product, err error) {
 	}
 
 	return p, nil
+}
+
+func (s *Store) Delete(p *Product) (err error) {
+	tx := s.db.Begin()
+	defer func() {
+		if r := recover(); r != nil || err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err = tx.First(p).Error; err != nil {
+		return errors.Wrap(err, "store")
+	}
+
+	if err = tx.Delete(p).Error; err != nil {
+		return errors.Wrap(err, "store")
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		return errors.Wrap(err, "store")
+	}
+
+	return nil
 }

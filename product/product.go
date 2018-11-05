@@ -48,3 +48,11 @@ type UpdateResponse struct {
 	Product *Product `json:"product"`
 	util.ErringResponse
 }
+
+type DeleteRequest struct {
+	Product *Product `json:"product"`
+}
+
+type DeleteResponse struct {
+	util.ErringResponse
+}
