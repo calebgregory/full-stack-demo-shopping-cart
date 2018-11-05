@@ -39,3 +39,12 @@ type CreateResponse struct {
 	Product *Product `json:"product"`
 	util.ErringResponse
 }
+
+type UpdateRequest struct {
+	Product *Product `json:"product"`
+}
+
+type UpdateResponse struct {
+	Product *Product `json:"product"`
+	util.ErringResponse
+}

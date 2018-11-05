@@ -9,6 +9,7 @@ type ReaderWriter interface {
 	GetAll() ([]*Product, error)
 	GetOne(id int) (*Product, error)
 	Create(*Product) (*Product, error)
+	Update(*Product) (*Product, error)
 }
 
 type Store struct {
@@ -40,5 +41,28 @@ func (s *Store) Create(p *Product) (*Product, error) {
 	if err := s.db.Create(p).Error; err != nil {
 		return nil, errors.Wrap(err, "store")
 	}
+	return p, nil
+}
+
+func (s *Store) Update(p *Product) (r *Product, err error) {
+	tx := s.db.Begin()
+	defer func() {
+		if r := recover(); r != nil || err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err = tx.First(p).Error; err != nil {
+		return nil, errors.Wrap(err, "store")
+	}
+
+	if err = tx.Model(p).Update(p).Error; err != nil {
+		return nil, errors.Wrap(err, "store")
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		return nil, errors.Wrap(err, "store")
+	}
+
 	return p, nil
 }

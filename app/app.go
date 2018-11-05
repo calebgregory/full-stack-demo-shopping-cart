@@ -35,6 +35,7 @@ func (app *App) ListenAndServe(addr string, handler http.Handler) error {
 	http.HandleFunc("/products/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
 	http.HandleFunc("/products/get-one", util.AllowCORS(app.ProductHandler.HandleGetOne))
 	http.HandleFunc("/products/create", util.AllowCORS(app.ProductHandler.HandleCreate))
+	http.HandleFunc("/products/update", util.AllowCORS(app.ProductHandler.HandleUpdate))
 	return http.ListenAndServe(addr, handler)
 }
 
