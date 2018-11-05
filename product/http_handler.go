@@ -8,7 +8,10 @@ import (
 
 type HttpHandler interface {
 	HandleGetAll(w http.ResponseWriter, r *http.Request)
+	HandleGetOne(w http.ResponseWriter, r *http.Request)
 	HandleCreate(w http.ResponseWriter, r *http.Request)
+	HandleUpdate(w http.ResponseWriter, r *http.Request)
+	HandleDelete(w http.ResponseWriter, r *http.Request)
 }
 
 type Handler struct {
@@ -32,6 +35,19 @@ func (h *Handler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 	util.WriteResponse(w, res)
 }
 
+func (h *Handler) HandleGetOne(w http.ResponseWriter, r *http.Request) {
+	var req GetOneRequest
+	if err := util.BindJSON(r, &req); err != nil {
+		log.Printf("product handler handle get one bind json %s", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	res := h.server.GetOne(&req)
+
+	util.WriteResponse(w, res)
+}
+
 func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
 	if err := util.BindJSON(r, &req); err != nil {
@@ -41,6 +57,32 @@ func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := h.server.Create(&req)
+
+	util.WriteResponse(w, res)
+}
+
+func (h *Handler) HandleUpdate(w http.ResponseWriter, r *http.Request) {
+	var req UpdateRequest
+	if err := util.BindJSON(r, &req); err != nil {
+		log.Printf("product handler handle update bind json %s", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	res := h.server.Update(&req)
+
+	util.WriteResponse(w, res)
+}
+
+func (h *Handler) HandleDelete(w http.ResponseWriter, r *http.Request) {
+	var req DeleteRequest
+	if err := util.BindJSON(r, &req); err != nil {
+		log.Printf("product handler handle update bind json %s", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	res := h.server.Delete(&req)
 
 	util.WriteResponse(w, res)
 }

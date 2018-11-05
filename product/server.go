@@ -8,7 +8,10 @@ import (
 
 type Server interface {
 	GetAll(*GetAllRequest) *GetAllResponse
+	GetOne(*GetOneRequest) *GetOneResponse
 	Create(*CreateRequest) *CreateResponse
+	Update(*UpdateRequest) *UpdateResponse
+	Delete(*DeleteRequest) *DeleteResponse
 }
 
 type Service struct {
@@ -34,6 +37,21 @@ func (s *Service) GetAll(req *GetAllRequest) (res *GetAllResponse) {
 	return
 }
 
+func (s *Service) GetOne(req *GetOneRequest) (res *GetOneResponse) {
+	res = &GetOneResponse{}
+	p, err := s.store.GetOne(req.ID)
+	if err != nil {
+		log.Printf("product service %s", err)
+		res.Err = &util.ResponseError{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Internal Server Error",
+		}
+		return
+	}
+	res.Product = p
+	return
+}
+
 func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 	res = &CreateResponse{}
 	p, err := s.store.Create(req.Product)
@@ -46,5 +64,33 @@ func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 		return
 	}
 	res.Product = p
+	return
+}
+
+func (s *Service) Update(req *UpdateRequest) (res *UpdateResponse) {
+	res = &UpdateResponse{}
+	p, err := s.store.Update(req.Product)
+	if err != nil {
+		log.Printf("product service %s", err)
+		res.Err = &util.ResponseError{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Internal Server Error",
+		}
+		return
+	}
+	res.Product = p
+	return
+}
+
+func (s *Service) Delete(req *DeleteRequest) (res *DeleteResponse) {
+	res = &DeleteResponse{}
+	err := s.store.Delete(req.Product)
+	if err != nil {
+		log.Printf("product service %s", err)
+		res.Err = &util.ResponseError{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Internal Server Error",
+		}
+	}
 	return
 }

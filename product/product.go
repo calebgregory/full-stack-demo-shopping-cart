@@ -7,8 +7,8 @@ import (
 
 type Product struct {
 	gorm.Model
-	Description string
-	Price       int
+	Description string `json:"description"`
+	Price       int    `json:"price"`
 }
 
 func New(db *gorm.DB) HttpHandler {
@@ -22,11 +22,37 @@ type GetAllResponse struct {
 	util.ErringResponse
 }
 
+type GetOneRequest struct {
+	ID int `json:"id"`
+}
+
+type GetOneResponse struct {
+	Product *Product `json:"product"`
+	util.ErringResponse
+}
+
 type CreateRequest struct {
 	Product *Product `json:"product"`
 }
 
 type CreateResponse struct {
 	Product *Product `json:"product"`
+	util.ErringResponse
+}
+
+type UpdateRequest struct {
+	Product *Product `json:"product"`
+}
+
+type UpdateResponse struct {
+	Product *Product `json:"product"`
+	util.ErringResponse
+}
+
+type DeleteRequest struct {
+	Product *Product `json:"product"`
+}
+
+type DeleteResponse struct {
 	util.ErringResponse
 }
