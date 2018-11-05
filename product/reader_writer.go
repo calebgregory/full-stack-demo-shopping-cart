@@ -7,6 +7,7 @@ import (
 
 type ReaderWriter interface {
 	GetAll() ([]*Product, error)
+	GetOne(id int) (*Product, error)
 	Create(*Product) (*Product, error)
 }
 
@@ -25,6 +26,14 @@ func (s *Store) GetAll() ([]*Product, error) {
 		return ps, errors.Wrap(err, "store")
 	}
 	return ps, nil
+}
+
+func (s *Store) GetOne(id int) (*Product, error) {
+	var p Product
+	if err := s.db.First(&p, id).Error; err != nil {
+		return &p, errors.Wrap(err, "store")
+	}
+	return &p, nil
 }
 
 func (s *Store) Create(p *Product) (*Product, error) {

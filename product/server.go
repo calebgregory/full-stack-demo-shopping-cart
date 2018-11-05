@@ -8,6 +8,7 @@ import (
 
 type Server interface {
 	GetAll(*GetAllRequest) *GetAllResponse
+	GetOne(*GetOneRequest) *GetOneResponse
 	Create(*CreateRequest) *CreateResponse
 }
 
@@ -31,6 +32,21 @@ func (s *Service) GetAll(req *GetAllRequest) (res *GetAllResponse) {
 		return
 	}
 	res.Products = ps
+	return
+}
+
+func (s *Service) GetOne(req *GetOneRequest) (res *GetOneResponse) {
+	res = &GetOneResponse{}
+	p, err := s.store.GetOne(req.ID)
+	if err != nil {
+		log.Printf("product service %s", err)
+		res.Err = &util.ResponseError{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Internal Server Error",
+		}
+		return
+	}
+	res.Product = p
 	return
 }
 

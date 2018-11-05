@@ -33,6 +33,7 @@ func New(pathToDb string) (*App, error) {
 func (app *App) ListenAndServe(addr string, handler http.Handler) error {
 	http.HandleFunc("/orders/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
 	http.HandleFunc("/products/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
+	http.HandleFunc("/products/get-one", util.AllowCORS(app.ProductHandler.HandleGetOne))
 	http.HandleFunc("/products/create", util.AllowCORS(app.ProductHandler.HandleCreate))
 	return http.ListenAndServe(addr, handler)
 }
