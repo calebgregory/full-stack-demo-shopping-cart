@@ -3,7 +3,7 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/satchelhealth/errors"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"net/http"

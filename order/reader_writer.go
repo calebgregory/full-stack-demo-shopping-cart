@@ -3,7 +3,7 @@ package order
 import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
 	"github.com/jinzhu/gorm"
-	"github.com/satchelhealth/errors"
+	"github.com/pkg/errors"
 )
 
 type ReaderWriter interface {
