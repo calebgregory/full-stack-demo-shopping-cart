@@ -1,20 +1,18 @@
-package address
+package customer
 
 import (
+	"github.com/calebgregory/full-stack-demo-shopping-cart/address"
+	"github.com/calebgregory/full-stack-demo-shopping-cart/profile"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
 	"github.com/jinzhu/gorm"
 )
 
-type Address struct {
+type Customer struct {
 	gorm.Model
-	CustomerID int    `json:"customerID";gorm:"index"`
-	Name       string `json:"name"`
-	Street     string `json:"street"`
-	City       string `json:"city"`
-	State      string `json:"state"`
-	Country    string `json:"country"`
-	Phone      string `json:"phone"`
-	Type       string `json:"type";sql:"not null;type:ENUM('shipping', 'billing')"`
+	ProfileID int              `json:"profileID"`
+	Profile   *profile.Profile `json:"profile"`
+	AddressID int              `json:"addressID"`
+	Address   *address.Address `json:"address"`
 }
 
 func New(db *gorm.DB) HttpHandler {
@@ -24,7 +22,7 @@ func New(db *gorm.DB) HttpHandler {
 type GetAllRequest struct{}
 
 type GetAllResponse struct {
-	Addresses []*Address `json:"addresses"`
+	Customers []*Customer `json:"customers"`
 	util.ErringResponse
 }
 
@@ -33,30 +31,30 @@ type GetOneRequest struct {
 }
 
 type GetOneResponse struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 	util.ErringResponse
 }
 
 type CreateRequest struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 }
 
 type CreateResponse struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 	util.ErringResponse
 }
 
 type UpdateRequest struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 }
 
 type UpdateResponse struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 	util.ErringResponse
 }
 
 type DeleteRequest struct {
-	Address *Address `json:"address"`
+	Customer *Customer `json:"customer"`
 }
 
 type DeleteResponse struct {

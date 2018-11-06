@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/address"
+	"github.com/calebgregory/full-stack-demo-shopping-cart/customer"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/order"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/profile"
@@ -12,11 +13,12 @@ import (
 )
 
 type App struct {
-	db             *gorm.DB
-	AddressHandler address.HttpHandler
-	OrderHandler   order.HttpHandler
-	ProductHandler product.HttpHandler
-	ProfileHandler profile.HttpHandler
+	db              *gorm.DB
+	AddressHandler  address.HttpHandler
+	CustomerHandler customer.HttpHandler
+	OrderHandler    order.HttpHandler
+	ProductHandler  product.HttpHandler
+	ProfileHandler  profile.HttpHandler
 }
 
 func New(pathToDb string) (*App, error) {
@@ -26,11 +28,12 @@ func New(pathToDb string) (*App, error) {
 	}
 
 	a := &App{
-		db:             db,
-		AddressHandler: address.New(db),
-		OrderHandler:   order.New(db),
-		ProductHandler: product.New(db),
-		ProfileHandler: profile.New(db),
+		db:              db,
+		AddressHandler:  address.New(db),
+		CustomerHandler: customer.New(db),
+		OrderHandler:    order.New(db),
+		ProductHandler:  product.New(db),
+		ProfileHandler:  profile.New(db),
 	}
 
 	return a, nil
@@ -42,6 +45,12 @@ func (app *App) ListenAndServe(addr string, handler http.Handler) error {
 	http.HandleFunc("/address/create", util.AllowCORS(app.AddressHandler.HandleCreate))
 	http.HandleFunc("/address/update", util.AllowCORS(app.AddressHandler.HandleUpdate))
 	http.HandleFunc("/address/delete", util.AllowCORS(app.AddressHandler.HandleDelete))
+
+	http.HandleFunc("/customer/get-all", util.AllowCORS(app.CustomerHandler.HandleGetAll))
+	http.HandleFunc("/customer/get-one", util.AllowCORS(app.CustomerHandler.HandleGetOne))
+	http.HandleFunc("/customer/create", util.AllowCORS(app.CustomerHandler.HandleCreate))
+	http.HandleFunc("/customer/update", util.AllowCORS(app.CustomerHandler.HandleUpdate))
+	http.HandleFunc("/customer/delete", util.AllowCORS(app.CustomerHandler.HandleDelete))
 
 	http.HandleFunc("/order/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
 
