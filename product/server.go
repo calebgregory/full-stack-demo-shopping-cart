@@ -34,6 +34,16 @@ func (s *Service) GetAll(req *GetAllRequest) (res *GetAllResponse) {
 
 func (s *Service) GetOne(req *GetOneRequest) (res *GetOneResponse) {
 	res = &GetOneResponse{}
+
+	if req.ID == 0 {
+		res.Err = util.NewResponseError(
+			errors.New("bad data"),
+			"No ID found on request body; format { id: Int }",
+			400,
+		)
+		return
+	}
+
 	p, err := s.store.GetOne(req.ID)
 	if err != nil {
 		res.Err = util.NewResponseError(err)
@@ -66,6 +76,16 @@ func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 
 func (s *Service) Update(req *UpdateRequest) (res *UpdateResponse) {
 	res = &UpdateResponse{}
+
+	if req.Product == nil || req.Product.ID == 0 {
+		res.Err = util.NewResponseError(
+			errors.New("bad data"),
+			"no product with ID found on request body; format { product: { id, ... } }",
+			400,
+		)
+		return
+	}
+
 	p, err := s.store.Update(req.Product)
 	if err != nil {
 		res.Err = util.NewResponseError(err)
@@ -77,6 +97,16 @@ func (s *Service) Update(req *UpdateRequest) (res *UpdateResponse) {
 
 func (s *Service) Delete(req *DeleteRequest) (res *DeleteResponse) {
 	res = &DeleteResponse{}
+
+	if req.Product == nil || req.Product.ID == 0 {
+		res.Err = util.NewResponseError(
+			errors.New("bad data"),
+			"no product with ID found on request body; format { product: { id, ... } }",
+			400,
+		)
+		return
+	}
+
 	err := s.store.Delete(req.Product)
 	if err != nil {
 		res.Err = util.NewResponseError(err)
