@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/calebgregory/full-stack-demo-shopping-cart/address"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/order"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/product"
 	"github.com/calebgregory/full-stack-demo-shopping-cart/profile"
@@ -12,6 +13,7 @@ import (
 
 type App struct {
 	db             *gorm.DB
+	AddressHandler address.HttpHandler
 	OrderHandler   order.HttpHandler
 	ProductHandler product.HttpHandler
 	ProfileHandler profile.HttpHandler
@@ -25,6 +27,7 @@ func New(pathToDb string) (*App, error) {
 
 	a := &App{
 		db:             db,
+		AddressHandler: address.New(db),
 		OrderHandler:   order.New(db),
 		ProductHandler: product.New(db),
 		ProfileHandler: profile.New(db),
@@ -34,6 +37,12 @@ func New(pathToDb string) (*App, error) {
 }
 
 func (app *App) ListenAndServe(addr string, handler http.Handler) error {
+	http.HandleFunc("/addresses/get-all", util.AllowCORS(app.AddressHandler.HandleGetAll))
+	http.HandleFunc("/addresses/get-one", util.AllowCORS(app.AddressHandler.HandleGetOne))
+	http.HandleFunc("/addresses/create", util.AllowCORS(app.AddressHandler.HandleCreate))
+	http.HandleFunc("/addresses/update", util.AllowCORS(app.AddressHandler.HandleUpdate))
+	http.HandleFunc("/addresses/delete", util.AllowCORS(app.AddressHandler.HandleDelete))
+
 	http.HandleFunc("/orders/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
 
 	http.HandleFunc("/products/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
