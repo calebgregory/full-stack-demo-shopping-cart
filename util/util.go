@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // ResponseError for a given request handler. Has StatusCode to return to http
@@ -19,6 +20,7 @@ type ResponseError struct {
 	Errors     []error `json:"-"`
 }
 
+// ResponseError implements Error interface
 func (e *ResponseError) Error() string {
 	errMsg := fmt.Sprintf("ResponseError %d %s; Errors: ", e.StatusCode, e.Message)
 	for _, err := range e.Errors {
@@ -27,6 +29,9 @@ func (e *ResponseError) Error() string {
 	return errMsg
 }
 
+// NewResponseError creates a new ResponseError. Optionally takes Message as
+// second argument and StatusCode as third argument.  Message defaults to
+// "Internal Server Error" and StatusCode defaults to 500.
 func NewResponseError(err error, opts ...interface{}) *ResponseError {
 	message := "Internal Server Error"
 	if len(opts) > 0 {
@@ -38,9 +43,14 @@ func NewResponseError(err error, opts ...interface{}) *ResponseError {
 		statusCode = opts[1].(int)
 	}
 
+	cause := errors.Cause(err)
+
 	if gorm.IsRecordNotFoundError(errors.Cause(err)) {
 		statusCode = http.StatusNotFound
 		message = "Not Found"
+	} else if strings.Contains(cause.Error(), "UNIQUE constraint failed") {
+		statusCode = http.StatusConflict
+		message = cause.Error()
 	}
 
 	return &ResponseError{
@@ -50,7 +60,7 @@ func NewResponseError(err error, opts ...interface{}) *ResponseError {
 	}
 }
 
-// ResponseErrer defines the behavior of a Response that Errs
+// ResponseErrer defines the behavior of a Response that Errs.
 type ResponseErrer interface {
 	ResponseError() *ResponseError
 }
