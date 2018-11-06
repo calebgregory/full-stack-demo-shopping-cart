@@ -45,7 +45,9 @@ func (s *Store) Create(p *Product) (*Product, error) {
 	return p, nil
 }
 
-func (s *Store) Update(p *Product) (r *Product, err error) {
+func (s *Store) Update(update *Product) (r *Product, err error) {
+	var p Product
+
 	tx := s.db.Begin()
 	defer func() {
 		if r := recover(); r != nil || err != nil {
@@ -53,11 +55,11 @@ func (s *Store) Update(p *Product) (r *Product, err error) {
 		}
 	}()
 
-	if err = tx.First(p).Error; err != nil {
+	if err = tx.First(&p).Error; err != nil {
 		return nil, errors.Wrap(err, "store")
 	}
 
-	if err = tx.Model(p).Update(p).Error; err != nil {
+	if err = tx.Model(&p).Update(update).Error; err != nil {
 		return nil, errors.Wrap(err, "store")
 	}
 
@@ -65,7 +67,7 @@ func (s *Store) Update(p *Product) (r *Product, err error) {
 		return nil, errors.Wrap(err, "store")
 	}
 
-	return p, nil
+	return &p, nil
 }
 
 func (s *Store) Delete(p *Product) (err error) {
