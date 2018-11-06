@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/calebgregory/full-stack-demo-shopping-cart/util"
+	"github.com/pkg/errors"
 )
 
 type Server interface {
@@ -44,6 +45,16 @@ func (s *Service) GetOne(req *GetOneRequest) (res *GetOneResponse) {
 
 func (s *Service) Create(req *CreateRequest) (res *CreateResponse) {
 	res = &CreateResponse{}
+
+	if req.Product == nil {
+		res.Err = util.NewResponseError(
+			errors.New("bad data"),
+			"Product not found on request body; format { product: {...} }",
+			400,
+		)
+		return
+	}
+
 	p, err := s.store.Create(req.Product)
 	if err != nil {
 		res.Err = util.NewResponseError(err)
