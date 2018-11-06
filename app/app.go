@@ -37,25 +37,25 @@ func New(pathToDb string) (*App, error) {
 }
 
 func (app *App) ListenAndServe(addr string, handler http.Handler) error {
-	http.HandleFunc("/addresses/get-all", util.AllowCORS(app.AddressHandler.HandleGetAll))
-	http.HandleFunc("/addresses/get-one", util.AllowCORS(app.AddressHandler.HandleGetOne))
-	http.HandleFunc("/addresses/create", util.AllowCORS(app.AddressHandler.HandleCreate))
-	http.HandleFunc("/addresses/update", util.AllowCORS(app.AddressHandler.HandleUpdate))
-	http.HandleFunc("/addresses/delete", util.AllowCORS(app.AddressHandler.HandleDelete))
+	http.HandleFunc("/address/get-all", util.AllowCORS(app.AddressHandler.HandleGetAll))
+	http.HandleFunc("/address/get-one", util.AllowCORS(app.AddressHandler.HandleGetOne))
+	http.HandleFunc("/address/create", util.AllowCORS(app.AddressHandler.HandleCreate))
+	http.HandleFunc("/address/update", util.AllowCORS(app.AddressHandler.HandleUpdate))
+	http.HandleFunc("/address/delete", util.AllowCORS(app.AddressHandler.HandleDelete))
 
-	http.HandleFunc("/orders/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
+	http.HandleFunc("/order/add-product", util.AllowCORS(app.OrderHandler.HandleAddProduct))
 
-	http.HandleFunc("/products/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
-	http.HandleFunc("/products/get-one", util.AllowCORS(app.ProductHandler.HandleGetOne))
-	http.HandleFunc("/products/create", util.AllowCORS(app.ProductHandler.HandleCreate))
-	http.HandleFunc("/products/update", util.AllowCORS(app.ProductHandler.HandleUpdate))
-	http.HandleFunc("/products/delete", util.AllowCORS(app.ProductHandler.HandleDelete))
+	http.HandleFunc("/product/get-all", util.AllowCORS(app.ProductHandler.HandleGetAll))
+	http.HandleFunc("/product/get-one", util.AllowCORS(app.ProductHandler.HandleGetOne))
+	http.HandleFunc("/product/create", util.AllowCORS(app.ProductHandler.HandleCreate))
+	http.HandleFunc("/product/update", util.AllowCORS(app.ProductHandler.HandleUpdate))
+	http.HandleFunc("/product/delete", util.AllowCORS(app.ProductHandler.HandleDelete))
 
-	http.HandleFunc("/profiles/get-all", util.AllowCORS(app.ProfileHandler.HandleGetAll))
-	http.HandleFunc("/profiles/get-one", util.AllowCORS(app.ProfileHandler.HandleGetOne))
-	http.HandleFunc("/profiles/create", util.AllowCORS(app.ProfileHandler.HandleCreate))
-	http.HandleFunc("/profiles/update", util.AllowCORS(app.ProfileHandler.HandleUpdate))
-	http.HandleFunc("/profiles/delete", util.AllowCORS(app.ProfileHandler.HandleDelete))
+	http.HandleFunc("/profile/get-all", util.AllowCORS(app.ProfileHandler.HandleGetAll))
+	http.HandleFunc("/profile/get-one", util.AllowCORS(app.ProfileHandler.HandleGetOne))
+	http.HandleFunc("/profile/create", util.AllowCORS(app.ProfileHandler.HandleCreate))
+	http.HandleFunc("/profile/update", util.AllowCORS(app.ProfileHandler.HandleUpdate))
+	http.HandleFunc("/profile/delete", util.AllowCORS(app.ProfileHandler.HandleDelete))
 
 	return http.ListenAndServe(addr, handler)
 }
